@@ -32,18 +32,26 @@ class VideoLoader:
         frames = []
         frame_count = 0
         
+        MAX_FRAMES = 1800  # limite para teste (você pode aumentar ou diminuir)
+
         while True:
             ret, frame = cap.read()
             if not ret:
                 break
-            
+
             frames.append(frame)
             frame_count += 1
-            
-            # Mostra progresso a cada 100 frames
+
+            # Interrompe o carregamento quando o limite for atingido
+            if frame_count >= MAX_FRAMES:
+                print(f"  Limite de {MAX_FRAMES} frames atingido. Parando leitura.")
+                break
+
+            # Progresso
             if frame_count % 100 == 0:
                 print(f"  Carregados {frame_count} frames...")
-        
+
+                
         cap.release()
         
         print(f"Total de frames carregados: {frame_count}")
