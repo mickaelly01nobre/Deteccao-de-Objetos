@@ -59,7 +59,7 @@ class SignDetector:
             return {
                 "avg_inference_time": 0,
                 "total_batches": 0,
-                "fps_per_batch": 0,  # ADICIONE ESTA CHAVE
+                "fps_per_batch": 0, 
                 "total_frames": 0
             }
         
@@ -69,6 +69,6 @@ class SignDetector:
         return {
             "avg_inference_time": avg_time,
             "total_batches": len(self.inference_times),
-            "fps_per_batch": fps_per_batch,  # AGORA ESTÁ DEFINIDA
+            "fps_per_batch": fps_per_batch,  
             "total_frames": len(self.inference_times) * self.batch_size
         }

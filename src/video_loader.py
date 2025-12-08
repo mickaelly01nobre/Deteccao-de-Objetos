@@ -32,7 +32,7 @@ class VideoLoader:
         frames = []
         frame_count = 0
         
-        MAX_FRAMES = 1800  # limite para teste (você pode aumentar ou diminuir)
+        MAX_FRAMES = 1000  # limite para teste (você pode aumentar ou diminuir)
 
         while True:
             ret, frame = cap.read()
