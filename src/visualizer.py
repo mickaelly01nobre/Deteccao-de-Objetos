@@ -3,54 +3,61 @@ import numpy as np
 
 class ResultVisualizer:
     def __init__(self):
-        # Cores para diferentes classes
+        # Lista oficial das classes NA ORDEM DO data.yaml
+        self.class_names = [
+            'do_not_enter',
+            'parking',
+            'ped_zebra_cross',
+            'red_light',
+            'stop',
+            'traffic_light',
+            'warning'
+        ]
+
+        # Cores para cada classe
         self.colors = {
-            "stop_sign": (0, 0, 255),      # Vermelho
-            "speed_limit": (0, 255, 0),    # Verde
-            "yield": (255, 0, 0),          # Azul
-            "traffic_light": (0, 255, 255), # Amarelo
-            "pedestrian_crossing": (255, 0, 255), # Magenta
-            "no_entry": (255, 255, 0)      # Ciano
+            'do_not_enter': (0, 0, 255),       # vermelho
+            'parking': (0, 255, 0),            # verde
+            'ped_zebra_cross': (255, 0, 0),    # azul
+            'red_light': (0, 255, 255),        # amarelo
+            'stop': (255, 0, 255),             # magenta
+            'traffic_light': (255, 255, 0),    # ciano
+            'warning': (255, 255, 255)         # branco
         }
-    
+
     def draw_boxes(self, frame, detections):
-        """
-        Desenha bounding boxes no frame
-        Args:
-            frame: imagem original
-            detections: objeto Results do YOLO
-        Returns:
-            Frame com boxes desenhadas
-        """
+        """Desenha bounding boxes no frame"""
         frame_copy = frame.copy()
-        
+
         if detections and hasattr(detections, 'boxes'):
             for box in detections.boxes:
+
                 # Coordenadas da box
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-                
+
                 # Classe e confiança
                 cls_id = int(box.cls[0])
                 conf = float(box.conf[0])
-                
-                # Nome da classe (ajuste baseado nas suas classes)
-                class_names = ["stop_sign", "speed_limit", "yield", 
-                              "traffic_light", "pedestrian_crossing", "no_entry"]
-                class_name = class_names[cls_id] if cls_id < len(class_names) else f"Class {cls_id}"
-                
-                # Cor da classe
+
+                # Nome da classe usando a ORDEM do data.yaml
+                if cls_id < len(self.class_names):
+                    class_name = self.class_names[cls_id]
+                else:
+                    class_name = f"Class {cls_id}"
+
+                # Cor correspondente
                 color = self.colors.get(class_name, (255, 255, 255))
-                
-                # Desenha retângulo
+
+                # Desenha caixa
                 cv2.rectangle(frame_copy, (x1, y1), (x2, y2), color, 2)
-                
-                # Texto com classe e confiança
-                label = f"{class_name}: {conf:.2f}"
+
+                # Texto
+                label = f"{class_name} {conf:.2f}"
                 cv2.putText(frame_copy, label, (x1, y1 - 10),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-        
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
         return frame_copy
-    
+
     def save_video(self, frames, output_path, fps=30):
         """Salva lista de frames como vídeo"""
         if not frames:
@@ -59,8 +66,8 @@ class ResultVisualizer:
         height, width = frames[0].shape[:2]
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-        
+
         for frame in frames:
             out.write(frame)
-        
+
         out.release()
