@@ -1,3 +1,13 @@
+"""
+ A classe VideoLoader é responsável por carregar um vídeo, extrair seus frames
+ e organizá-los em batches. Ela verifica se o arquivo existe, tenta abrir o vídeo
+ com diferentes backends caso haja erro, lê os frames até um limite definido e
+ mostra o progresso da leitura. Depois, divide os frames em lotes do tamanho
+ especificado, garantindo que todos tenham a mesma dimensão (redimensionando
+ quando necessário) e convertendo cada lote para um array NumPy, produzindo
+ batches prontos para processamento por modelos como o YOLO.
+"""
+ 
 import cv2
 import numpy as np
 

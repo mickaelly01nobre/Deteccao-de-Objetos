@@ -3,7 +3,7 @@ import time
 import cv2
 import os
 import sys
-from tqdm import tqdm  # Para progress bar
+from tqdm import tqdm  
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -11,7 +11,7 @@ from video_loader import VideoLoader
 from detector import SignDetector
 from visualizer import ResultVisualizer
 
-def process_video_fast(input_path, output_path, model_path, max_frames=200, batch_size=8):
+def process_video_fast(input_path, output_path, model_path, max_frames=300, batch_size=8):
     """
     Versão otimizada: processa apenas os primeiros N frames
     """
@@ -46,7 +46,7 @@ def process_video_fast(input_path, output_path, model_path, max_frames=200, batc
         print(" Nenhum frame carregado")
         return False
     
-    print(f"✓ Frames carregados: {len(frames)}")
+    print(f" Frames carregados: {len(frames)}")
     
     # 2. Cria batches
     print(f"\n[2/4] Criando batches...")
@@ -64,7 +64,7 @@ def process_video_fast(input_path, output_path, model_path, max_frames=200, batc
         print(" Nenhum batch criado")
         return False
     
-    print(f"✓ Batches criados: {len(batches)}")
+    print(f" Batches criados: {len(batches)}")
     
     # 3. Inicializa detector (CPU para menos memória)
     print(f"\n[3/4] Inicializando detector...")
@@ -103,7 +103,7 @@ def process_video_fast(input_path, output_path, model_path, max_frames=200, batc
         stats = detector.get_performance_stats()
         
         print("\n" + "="*50)
-        print("📊 ESTATÍSTICAS:")
+        print(" ESTATÍSTICAS:")
         print("="*50)
         print(f"Tempo total: {total_time:.1f}s")
         print(f"FPS: {len(processed_frames)/total_time:.1f}")
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     parser.add_argument("--video", type=str, default="data/Video_transito.mp4")
     parser.add_argument("--output", type=str, default="output_fast.mp4")
     parser.add_argument("--model", type=str, default="models/yolo11n.pt")
-    parser.add_argument("--max_frames", type=int, default=1000)
+    parser.add_argument("--max_frames", type=int, default=300)
     parser.add_argument("--batch_size", type=int, default=8)
     
     args = parser.parse_args()

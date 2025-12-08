@@ -1,3 +1,12 @@
+"""
+ A classe ResultVisualizer é responsável por desenhar as detecções do modelo nos frames
+ e salvar o resultado em vídeo. Ela mantém uma lista de nomes de classes (seguindo
+ a ordem do data.yaml) e cores específicas para cada uma. Ao receber um frame e as
+ detecções do YOLO, ela desenha as bounding boxes, escreve o nome da classe e a
+ confiança, e devolve o frame anotado. Além disso, também permite salvar uma lista
+ de frames processados como um vídeo final.
+"""
+
 import cv2
 import numpy as np
 

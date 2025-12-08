@@ -1,3 +1,10 @@
+"""
+ A classe SignDetector realiza batch processing: ela pega vários frames de uma vez,
+ converte cada um para o formato correto e envia todos juntos para o modelo YOLO,
+ que faz a detecção em lote. Durante o processo, ela mede o tempo gasto em cada batch,
+ armazena esses valores e fornece estatísticas de desempenho como tempo médio,
+ quantidade de batches processados e FPS por batch.
+"""
 from ultralytics import YOLO
 import time
 
@@ -12,7 +19,7 @@ class SignDetector:
         """
         self.model = YOLO(model_path)
         self.device = device
-        self.batch_size = batch_size  # ADICIONE ESTA LINHA
+        self.batch_size = batch_size  
         self.inference_times = []
     
     def detect_batch(self, batch):
