@@ -10,7 +10,7 @@ sudo apt-get update && sudo apt-get install -y libgl1-mesa-glx libglib2.0-0 libs
 
 > **Observação:** Estas bibliotecas não estão listadas no `requirements.txt`, pois não são pacotes Python, mas dependências do sistema necessárias para o funcionamento do OpenCV e outros módulos gráficos.
 
-**Execução do modelo**
+###**Execução do modelo**
 
  **Modelo padrão (.pt):**
  
@@ -27,5 +27,4 @@ python src/main.py --video data/Video_transito.mp4 --model models/best.onnx --ba
 
 ```bash
 python src/main.py --video data/Video_transito.mp4 --model models/best_int8.onnx --batch_size 8 --max_frames 300
-´´
-´´
+``
