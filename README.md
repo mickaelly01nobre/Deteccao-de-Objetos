@@ -7,6 +7,7 @@ Antes de executar o código, certifique-se de que as seguintes bibliotecas do si
 ```bash
 sudo apt-get update && sudo apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxrender1 libxext6
 ´´
+
 > **Observação:** Estas bibliotecas não estão listadas no `requirements.txt`, pois não são pacotes Python, mas dependências do sistema necessárias para o funcionamento do OpenCV e outros módulos gráficos.
 
 **Execução do modelo**
