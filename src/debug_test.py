@@ -1,33 +1,22 @@
-# test_videoloader.py
+from ultralytics import YOLO
+import cv2
+from visualizer import ResultVisualizer   # sua classe
 
-from video_loader import VideoLoader
+# carregando modelo treinado
+model = YOLO("models/best.pt")
 
-def main():
-    video_path = "data/Video_trasito.mp4"   # coloque o caminho do seu vídeo
+# carregando a imagem
+img = cv2.imread("data/no-parking.jpg")
 
-    # Cria o carregador de vídeo com batch de 16 frames
-    loader = VideoLoader(batch_size=16)
+# inferência
+results = model(img)
 
-    print("\n=== Teste: Carregando vídeo ===")
-    frames = loader.load_video(video_path)
+# visualizador
+viz = ResultVisualizer()
 
-    if len(frames) == 0:
-        print("❌ ERRO: Nenhum frame foi carregado.")
-        return
+# desenhar caixas — usar results[0]
+img_out = viz.draw_boxes(img, results[0])
 
-    print(f"✔️ Vídeo carregado com {len(frames)} frames.")
-
-    print("\n=== Teste: Criando batches ===")
-    batches = loader.create_batches(frames)
-
-    if len(batches) == 0:
-        print("❌ ERRO: Nenhum batch foi criado.")
-        return
-
-    print(f"✔️ {len(batches)} batches criados.")
-    print(f"✔️ Cada batch tem forma: {batches[0].shape} (deve ser algo como (16, H, W, 3))")
-
-    print("\n=== Teste finalizado com sucesso ===")
-
-if __name__ == "__main__":
-    main()
+# salvar no lugar de exibir
+cv2.imwrite("resultado_parki.jpg", img_out)
+print("Imagem salva como resultado_stop.jpg")
