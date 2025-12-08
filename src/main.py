@@ -123,7 +123,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", type=str, default="data/Video_transito.mp4")
     parser.add_argument("--output", type=str, default="output_fast.mp4")
-    parser.add_argument("--model", type=str, default="models/best.pt")
+    parser.add_argument("--model", type=str, default="models/yolo11n.pt")
     parser.add_argument("--max_frames", type=int, default=1000)
     parser.add_argument("--batch_size", type=int, default=8)
     
