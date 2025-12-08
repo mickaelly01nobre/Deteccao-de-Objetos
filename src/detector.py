@@ -1,81 +1,69 @@
-"""
- A classe SignDetector realiza batch processing: ela pega vários frames de uma vez,
- converte cada um para o formato correto e envia todos juntos para o modelo YOLO,
- que faz a detecção em lote. Durante o processo, ela mede o tempo gasto em cada batch,
- armazena esses valores e fornece estatísticas de desempenho como tempo médio,
- quantidade de batches processados e FPS por batch.
-"""
 from ultralytics import YOLO
+import cv2
 import time
+import numpy as np
 
 class SignDetector:
     def __init__(self, model_path, device="cpu", batch_size=16):
         """
-        Inicializa o detector com o modelo treinado
+        Detector de sinais usando YOLO
         Args:
-            model_path: caminho para .pt ou .onnx
-            device: "cpu" ou "cuda" ou 0 para GPU
-            batch_size: tamanho do batch (importante para cálculo de FPS)
+            model_path: caminho para o modelo (.pt ou .onnx)
+            device: "cpu" ou "cuda"
+            batch_size: tamanho do batch para inferência
         """
         self.model = YOLO(model_path)
         self.device = device
-        self.batch_size = batch_size  
+        self.batch_size = batch_size
         self.inference_times = []
-    
+
     def detect_batch(self, batch):
         """
-        Processa um batch de frames
+        Processa um batch de frames de forma segura
         Args:
-            batch: numpy array de shape (batch_size, H, W, C)
+            batch: numpy array de shape (B, H, W, 3) - frames em BGR
         Returns:
-            Lista de resultados para cada frame
+            lista de resultados do YOLO para cada frame
         """
-        if batch.size == 0:
-            print("AVISO: Batch vazio recebido")
-            return []
-        
+        results = []
+
+        # Garantir que todos os frames estejam no formato correto
+        batch_rgb = []
+        for frame in batch:
+            # Converte BGR -> RGB e garante que não há strides negativas
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).copy()
+            batch_rgb.append(frame_rgb)
+
         start_time = time.time()
-        
-        # Converte batch para lista de imagens
-        # O YOLO espera imagens em formato (H, W, C) - RGB
-        batch_list = []
-        for i in range(batch.shape[0]):
-            frame = batch[i]
-            # Converte BGR para RGB se necessário
-            if frame.shape[2] == 3:
-                frame_rgb = frame[..., ::-1]  # BGR to RGB
-                batch_list.append(frame_rgb)
-            else:
-                batch_list.append(frame)
-        
-        # Executa inferência em BATCH
         try:
-            results = self.model(batch_list, device=self.device, verbose=False)
+            # YOLO pode receber uma lista de imagens para inferência em batch
+            batch_results = self.model(batch_rgb, device=self.device, verbose=False)
             inference_time = time.time() - start_time
             self.inference_times.append(inference_time)
-            
-            print(f"  Batch processado em {inference_time:.3f}s")
-            return results
+
+            # batch_results é uma lista com resultados para cada frame
+            results.extend(batch_results)
         except Exception as e:
             print(f"ERRO na inferência: {e}")
-            return []
-    
+        
+        return results
+
     def get_performance_stats(self):
         """Retorna estatísticas de performance"""
         if not self.inference_times:
             return {
                 "avg_inference_time": 0,
                 "total_batches": 0,
-                "fps_per_batch": 0, 
+                "fps_per_batch": 0,
                 "total_frames": 0
             }
-        
+
         avg_time = sum(self.inference_times) / len(self.inference_times)
-        fps_per_batch = self.batch_size / avg_time if avg_time > 0 else 0
-        
+        fps = self.batch_size / avg_time if avg_time > 0 else 0
+
         return {
             "avg_inference_time": avg_time,
             "total_batches": len(self.inference_times),
-            "fps_per_batch": fps_per_batch,  
+            "fps_per_batch": fps,
             "total_frames": len(self.inference_times) * self.batch_size
         }
