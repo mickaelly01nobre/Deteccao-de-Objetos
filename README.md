@@ -260,5 +260,30 @@ Before running the code, make sure the following system libraries are installed:
 
 ```bash
 sudo apt-get update && sudo apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxrender1 libxext6
-´´´
-**Note**: These libraries are not included in requirements.txt because they are system-level dependencies required for OpenCV and other graphical modules.
+```
+
+
+> **Note:** These libraries are not included in `requirements.txt because they are system-level dependencies required for OpenCV and other graphical modules.
+
+ 
+
+### Model Execution
+
+**Default model (.pt):**
+
+ 
+```bash
+python src/main.py --video data/Video_transito.mp4 --model models/best.pt --batch_size 8 --max_frames 300
+```
+
+**ONNX model (.onnx):**
+
+```bash
+python src/main.py --video data/Video_transito.mp4 --model models/best.onnx --batch_size 8 --max_frames 300
+```
+
+**Quantized model (INT8, .onnx):**
+
+```bash
+python src/main.py --video data/Video_transito.mp4 --model models/best_int8.onnx --batch_size 8 --max_frames 300
+```
