@@ -143,6 +143,7 @@ python src/main.py --video data/Video_transito.mp4 --model models/best.onnx --ba
 ```bash
 python src/main.py --video data/Video_transito.mp4 --model models/best_int8.onnx --batch_size 8 --max_frames 300
 ```
+---
 
 # 🎯 Object Detection in Video
 
